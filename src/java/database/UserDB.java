@@ -1,6 +1,5 @@
 package database;
 
-import models.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,29 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+import models.Users;
 
 public class UserDB {
 
-    public int insert(User user) throws NotesDBException {
-        ConnectionPool pool = ConnectionPool.getInstance();
-        Connection connection = pool.getConnection();
-
-        try {
-            String preparedQuery = "INSERT INTO users (username, password, firstname, lastname, email) VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement ps = connection.prepareStatement(preparedQuery);
-            ps.setString(1, user.getUsername());
-            ps.setString(2, user.getPassword());
-            ps.setString(3, user.getFirstname());
-            ps.setString(4, user.getLastname());
-            ps.setString(5, user.getEmail());
-            int rows = ps.executeUpdate();
-            return rows;
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, "Cannot insert " + user.toString(), ex);
-            throw new NotesDBException("Error inserting user");
-        } finally {
-            pool.freeConnection(connection);
-        }
+    public int insert(Users user) throws NotesDBException {
+        
     }
 
     public int update(User user) throws NotesDBException {
@@ -59,7 +42,7 @@ public class UserDB {
         }
     }
 
-    public List<User> getAll() throws NotesDBException {
+    public List<Users> getAll() throws NotesDBException {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
 
@@ -99,38 +82,14 @@ public class UserDB {
      * @return A User object if found, null otherwise.
      * @throws NotesDBException
      */
-    public User getUser(String username) throws NotesDBException {
-        ConnectionPool pool = ConnectionPool.getInstance();
-        Connection connection = pool.getConnection();
-        String selectSQL = "SELECT * FROM users WHERE username = ?";
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = connection.prepareStatement(selectSQL);
-            ps.setString(1, username);
-            rs = ps.executeQuery();
-
-            User user = null;
-            while (rs.next()) {
-                user = new User(rs.getString("username"),
-                        rs.getString("password"),
-                        rs.getString("firstname"),
-                        rs.getString("lastname"),
-                        rs.getString("email"));
-            }
-            pool.freeConnection(connection);
+    public Users getUser(String username) throws NotesDBException {
+        EntityManager em = DBUtil.getEmFactory().createEntityManager();
+        
+        try{
+            Users user = em.find(Users.class,username);
             return user;
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, "Cannot read users", ex);
-            throw new NotesDBException("Error getting Users");
-        } finally {
-            try {
-                rs.close();
-                ps.close();
-            } catch (SQLException ex) {
-            }
-            pool.freeConnection(connection);
+        }finally {
+            em.close();
         }
     }
 
