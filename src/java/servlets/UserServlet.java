@@ -1,7 +1,7 @@
 package servlets;
 
 import services.UserService;
-import models.User;
+import models.Users;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -22,16 +22,16 @@ public class UserServlet extends HttpServlet {
         if (action != null && action.equals("view")) {
             String selectedUsername = request.getParameter("selectedUsername");
             try {
-                User user = us.get(selectedUsername);
+                Users user = us.get(selectedUsername);
                 request.setAttribute("selectedUser", user);
             } catch (Exception ex) {
                 Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
-        ArrayList<User> users = null;        
+        ArrayList<Users> users = null;        
         try {
-            users = (ArrayList<User>) us.getAll();
+            users = (ArrayList<Users>) us.getAll();
         } catch (Exception ex) {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -65,9 +65,9 @@ public class UserServlet extends HttpServlet {
             request.setAttribute("errorMessage", "Whoops.  Could not perform that action.");
         }
         
-        ArrayList<User> users = null;
+        ArrayList<Users> users = null;
         try {
-            users = (ArrayList<User>) us.getAll();
+            users = (ArrayList<Users>) us.getAll();
         } catch (Exception ex) {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
