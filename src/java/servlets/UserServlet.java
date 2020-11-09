@@ -30,8 +30,10 @@ public class UserServlet extends HttpServlet {
         }
         
         ArrayList<Users> users = null;        
+        
         try {
-            users = (ArrayList<Users>) us.getAll();
+            String username = (String) request.getAttribute("username");
+            users = (ArrayList<Users>) us.getAll(username);
         } catch (Exception ex) {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -67,7 +69,7 @@ public class UserServlet extends HttpServlet {
         
         ArrayList<Users> users = null;
         try {
-            users = (ArrayList<Users>) us.getAll();
+            users = (ArrayList<Users>) us.getAll(username);
         } catch (Exception ex) {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
         }

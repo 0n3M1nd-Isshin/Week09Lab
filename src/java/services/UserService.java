@@ -17,10 +17,12 @@ public class UserService {
     }
 
     public List<Users> getAll(String username) throws Exception {
-        return userDB.getAll(username);
+        userDB = new UserDB();
+        List<Users> user = userDB.getAll(username);
+        return user;
     }
 
-    public void update(String username, String password, String firstname, String lastname, String email) throws Exception {
+    public void update(String username, String password, String firstname, String lastname, String email) throws Exception {     
         Users user = get(username);
         user.setPassword(password);
         user.setFirstname(firstname);
